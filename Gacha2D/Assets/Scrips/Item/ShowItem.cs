@@ -6,9 +6,15 @@ using TMPro;
 
 public class ShowItem : MonoBehaviour
 {
+    public static ShowItem instance;
     public Transform hodler;
     public TextMeshPro itemData;
     [SerializeField] List<Transform> items = new List<Transform>();
+
+    protected void Awake()
+    {
+        ShowItem.instance = this;
+    }
 
     private void Reset()
     {
@@ -27,7 +33,7 @@ public class ShowItem : MonoBehaviour
         }
     }
 
-    private void Start()
+    private void FixedUpdate()
     {
         LoadItem();
     }
@@ -36,7 +42,11 @@ public class ShowItem : MonoBehaviour
     {
         foreach (Transform item in items)
         {
-            itemData = item.GetComponent<TextMeshPro>();
+            if (item.name == SpinnerMarker.instance.itenName)
+            {
+                itemData = item.GetComponent<TextMeshPro>();
+                Spin.instance.Stop(itemData);
+            }
         }
 
     }

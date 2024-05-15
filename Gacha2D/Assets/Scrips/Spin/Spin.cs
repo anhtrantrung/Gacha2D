@@ -5,27 +5,34 @@ using UnityEngine;
 
 public class Spin : MonoBehaviour
 {
-    public Transform itemObj;
-    //public TextMeshPro item;
+    public static Spin instance;
+    public TextMeshPro item;
+    public TextMeshPro itemUI;
     public Transform ring;
     public float speed = 0f;
     public float maxSpeed ;
     public float slowDown;
     public string nameItem;
+    public bool isSpin;
+
+     void Awake()
+    {
+        Spin.instance = this;
+    }
 
     private void OnMouseDown()
     {
         StarSpin();
+        isSpin = true;
     }
     private void FixedUpdate()
     {
         Spinning();
-        Stop();
-        FindName();
     }
     public void StarSpin()
     {
-        maxSpeed = Random.Range(4, 7);
+        maxSpeed = Random.Range(6f, 9f);
+        slowDown = Random.Range(0.02f, 0.05f);
         speed = maxSpeed;
     }    
 
@@ -39,26 +46,15 @@ public class Spin : MonoBehaviour
         else
         {
             speed = 0f;
-        }    
-        
+        }           
     }    
 
-    public void Stop()
+    public void Stop(TextMeshPro txt)
     {
-        if(speed==0)
+        if(speed==0 && isSpin)
         {
-            //nameItem = SpinnerMarker.instance.number;
-            //Debug.Log(nameItem);
-
-            //itemObj = SpinnerMarker.instance.itemStop;
-            //item = itemObj.GetComponent<TextMeshPro>();
-            //Debug.Log(item.text);
+            isSpin = false;
+            itemUI.text ="Item: "+ txt.text;
         }    
-    }    
-
-    public void FindName()
-    {
-        itemObj = transform.Find(SpinnerMarker.instance.number);
-        Debug.Log(itemObj.name);
-    }    
+    }       
 }

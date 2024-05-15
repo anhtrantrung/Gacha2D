@@ -6,10 +6,10 @@ using UnityEngine;
 
 public class SpinnerMarker : MonoBehaviour
 {
-    public GameObject itemStop;
     public static SpinnerMarker instance;
+    public GameObject itemStop; 
     public TextMeshPro item;
-    public string number;
+    public string itenName;
 
     protected void Awake()
     {
@@ -18,10 +18,7 @@ public class SpinnerMarker : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        this.number = collision.name;
+        this.itenName = collision.name;
         itemStop = collision.gameObject;
-
-        //item = itemStop.GetComponent<TextMeshPro>();
-        //Debug.Log(item.text);
     }
 }

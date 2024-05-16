@@ -3,58 +3,99 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+
 public class Spin : MonoBehaviour
 {
     public static Spin instance;
-    public TextMeshPro item;
-    public TextMeshPro itemUI;
-    public Transform ring;
-    public float speed = 0f;
-    public float maxSpeed ;
-    public float slowDown;
-    public string nameItem;
-    public bool isSpin;
+    public Transform ring; 
+    public int numberItem;
+    public float timeRotate;
+    public int numberRotate;
+    public float currentTime;
+    public int itemRandom;
 
-     void Awake()
+    const float CIRCLE = 360f;
+    float angleItem;
+    public AnimationCurve animationCurve;
+
+    public Transform Horled;
+
+    void Awake()
     {
         Spin.instance = this;
     }
 
+
+    private void Start()
+    {
+        numberItem = ShowItem.instance.items.Count;
+        angleItem = CIRCLE/numberItem;
+        SetPos();
+    }
+
+    private void Update()
+    {
+       //ShowDialog();
+    }
     private void OnMouseDown()
     {
-        StarSpin();
-        isSpin = true;
-    }
-    private void FixedUpdate()
-    {
-        Spinning();
-    }
-    public void StarSpin()
-    {
-        maxSpeed = Random.Range(6f, 9f);
-        slowDown = Random.Range(0.02f, 0.05f);
-        speed = maxSpeed;
+        Rotate();
+        GetTxt();
     }    
 
-    public void Spinning()
+    IEnumerator SpinByAnge()
     {
-        if(speed >0)
+        float starAngle = ring.transform.eulerAngles.z;
+        currentTime = 0;
+        itemRandom = Random.Range(1, numberItem);
+        Debug.Log(itemRandom);
+        float angle = (numberRotate * CIRCLE) + angleItem * itemRandom - starAngle;
+
+        while(currentTime < timeRotate)
         {
-            ring.Rotate(0, 0, speed);
-            speed-= slowDown;
-        }   
-        else
+            yield return new WaitForEndOfFrame();
+            currentTime += Time.deltaTime;
+
+            float angleCurrent = angle * animationCurve.Evaluate(currentTime/timeRotate);
+            ring.transform.eulerAngles= new Vector3(0,0,angleCurrent+starAngle);
+        }
+    }
+    
+    public void Rotate()
+    {
+        StartCoroutine(SpinByAnge());
+    }
+
+    public void SetPos()
+    {
+        for (int i = 0; i < ShowItem.instance.items.Count; i++)
         {
-            speed = 0f;
-        }           
+            Horled.GetChild(i).eulerAngles = new Vector3(0, 0, -CIRCLE/numberItem*i);
+            //paren.GetChild(i).GetChild(0).GetComponent<TextMeshPro>().text = (i+1).ToString();
+          
+
+        }
     }    
 
-    public void Stop(TextMeshPro txt)
+    public void GetTxt()
     {
-        if(speed==0 && isSpin)
+        int item = itemRandom-1;
+        string txt = Horled.GetChild(item).GetChild(0).GetComponent<TextMeshPro>().text;
+        UIManage.instance.SetText(txt);
+    }    
+
+    public void ShowDialog()
+    {
+        if (currentTime >= timeRotate)
         {
-            isSpin = false;
-            itemUI.text ="Item: "+ txt.text;
+            Invoke("GetDialog", 1f);
         }    
-    }       
+    }    
+
+    public void GetDialog()
+    {
+       
+        UIManage.instance.SetDialog();
+    }    
+      
 }

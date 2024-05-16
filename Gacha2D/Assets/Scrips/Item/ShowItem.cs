@@ -9,7 +9,7 @@ public class ShowItem : MonoBehaviour
     public static ShowItem instance;
     public Transform hodler;
     public TextMeshPro itemData;
-    [SerializeField] List<Transform> items = new List<Transform>();
+    public List<Transform> items = new List<Transform>();
 
     protected void Awake()
     {
@@ -45,7 +45,7 @@ public class ShowItem : MonoBehaviour
             if (item.name == SpinnerMarker.instance.itenName)
             {
                 itemData = item.GetComponent<TextMeshPro>();
-                Spin.instance.Stop(itemData);
+          
             }
         }
 
